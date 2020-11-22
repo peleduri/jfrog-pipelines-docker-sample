@@ -85,10 +85,10 @@ pipelines:
           #inherits from bash 
           failOnScan:       true                      # default true
           inputResources:
-            - name:         docker_build           # required
+            - name:         dbp_build_info           # required
               trigger: true
           outputResources:
-            - name:         dbp_image           # optional
+            - name:         dbp_promoted_build_info           # optional
  
         execution:
           onStart:

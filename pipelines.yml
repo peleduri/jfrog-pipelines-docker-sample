@@ -54,7 +54,7 @@ pipelines:
           failOnScan:       true                      # default true
           inputResources:
             - name:         dbp_build_info           # required
-              trigger: false
+              trigger: true
           outputResources:
             - name:         dbp_promoted_build_info           # optional
  
@@ -68,6 +68,7 @@ pipelines:
             - echo "uh oh, something went wrong"
           onComplete: #always
             - echo "Cleaning up some stuff"
+            
       - name: docker_push
         type: DockerPush
         configuration:

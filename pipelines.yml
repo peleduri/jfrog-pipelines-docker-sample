@@ -52,7 +52,6 @@ pipelines:
         configuration:
           affinityGroup: dbp_group
           targetRepository: docker
-          forceXrayScan:    true
           integrations:
             - name: art                            # <-- replace with your artifactory integration
           inputSteps:
@@ -86,10 +85,10 @@ pipelines:
           #inherits from bash 
           failOnScan:       true                      # default true
           inputResources:
-            - name:         dbp_build_info           # required
+            - name:         docker_build           # required
               trigger: true
           outputResources:
-            - name:         dbp_promoted_build_info           # optional
+            - name:         dbp_image           # optional
  
         execution:
           onStart:

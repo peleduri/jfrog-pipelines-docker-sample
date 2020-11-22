@@ -46,6 +46,39 @@ pipelines:
             - name: dbp_repo
           integrations:
             - name: art                            # <-- replace with your artifactory integration
+            
+      - name: docker_push
+        type: DockerPush
+        configuration:
+          affinityGroup: dbp_group
+          targetRepository: docker
+          integrations:
+            - name: art                            # <-- replace with your artifactory integration
+          inputSteps:
+            - name: docker_build
+          outputResources:
+            - name: dbp_image
+
+      - name: publish_dbp_build
+        type: PublishBuildInfo
+        configuration:
+          inputSteps:
+            - name: docker_push
+          outputResources:
+            - name: dbp_build_info
+
+      - name: promote_dbp_build
+        type: PromoteBuild
+        configuration:
+          targetRepository: PromoteBuildRepo
+          forceXrayScan: true
+          integrations:
+            - name: art
+          inputResources:
+            - name: dbp_build_info
+          outputResources:
+            - name: dbp_promoted_build_info
+            
 
       - name: scan
         type: XrayScan
@@ -67,36 +100,4 @@ pipelines:
           onFailure:
             - echo "uh oh, something went wrong"
           onComplete: #always
-            - echo "Cleaning up some stuff"
-            
-      - name: docker_push
-        type: DockerPush
-        configuration:
-          affinityGroup: dbp_group
-          targetRepository: docker
-          forceXrayScan: true
-          integrations:
-            - name: art                            # <-- replace with your artifactory integration
-          inputSteps:
-            - name: docker_build
-          outputResources:
-            - name: dbp_image
-
-      - name: publish_dbp_build
-        type: PublishBuildInfo
-        configuration:
-          inputSteps:
-            - name: docker_push
-          outputResources:
-            - name: dbp_build_info
-
-      - name: promote_dbp_build
-        type: PromoteBuild
-        configuration:
-          targetRepository: PromoteBuildRepo
-          integrations:
-            - name: art
-          inputResources:
-            - name: dbp_build_info
-          outputResources:
-            - name: dbp_promoted_build_info
+            - echo "Cleaning up some stuff"            
